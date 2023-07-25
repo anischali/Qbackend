@@ -1,5 +1,5 @@
 #include "json_engine.hpp"
-#include <asm-generic/errno-base.h>
+#include <errno.h>
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>
