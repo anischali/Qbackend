@@ -1,4 +1,6 @@
 #include "translation.hpp"
+#include <exception>
+#include <functional>
 #include <nlohmann/json_fwd.hpp>
 #include <stdexcept>
 #include <string>
@@ -59,13 +61,7 @@ translation::from_json(nlohmann::json const &js)
 
 const nlohmann::json translation::to_json(void) const
 {
-    return nlohmann::json::parse(
-        fmt::format(json_fmt, 
-            name, translator_name, 
-            translation_desc, 
-            translator_page, 
-            url)
-    );
+    throw std::logic_error("translation::to_json(): not implemented");
 }
 
 

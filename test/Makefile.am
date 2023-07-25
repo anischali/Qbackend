@@ -22,6 +22,8 @@ backend_test_LDADD = $(LDLIB) $(EXTRA_LIBS) -lm -lrt ../src/.libs/libqbackend.la
 
 backend_test_SOURCES = \
     model/translation.cpp \
+    model/lang_translation.cpp \
+    model/translations.cpp \
     backend_test.cpp
 
 

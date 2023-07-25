@@ -27,19 +27,4 @@ public:
 };
 
 
-class lang_tranlation {
-
-private:
-    std::string language;
-    std::vector<translation *> _translations;
-
-public:
-    lang_tranlation();
-    lang_tranlation(std::string language, std::vector<translation> translations);
-    ~lang_tranlation();    
-
-    static lang_tranlation from_json(nlohmann::json js);
-    const nlohmann::json to_json(void) const;
-};
-
 #endif
