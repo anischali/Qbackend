@@ -9,11 +9,11 @@
 #include <unistd.h>
 #include <cerrno>
 #include <cstring>
-#include <json-c/json.h>
+
 
 
 using namespace qbackend;
-
+using namespace nlohmann;
 
 
 json_engine::json_engine()
@@ -28,7 +28,7 @@ json_engine::~json_engine()
 
 
 void* 
-json_engine::json_load(const char *filename, void *(*callback) (const char *json))
+json_engine::json_load(const char *filename, void *(*callback) (nlohmann::json js))
 {
     void *obj = nullptr;
     char *str = nullptr;
@@ -69,12 +69,14 @@ json_engine::encode(const void *obj, char *(*callback)(const void *obj))
 }
 
 void *
-json_engine::decode(const char *json, void *(*callback)(const char *json))
+json_engine::decode(const char *json_str, void *(*callback)(nlohmann::json js))
 {
-    if (!callback || !json)
+    if (!callback || !json_str)
         return nullptr;
 
-    return callback(json);
+    nlohmann::json js = nlohmann::json::parse(json_str);
+
+    return callback(js);
 }
 
 int

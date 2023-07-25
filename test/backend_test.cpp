@@ -1,11 +1,12 @@
+#include <iostream>
 #include <cstdio>
 #include <cstdlib>
 #include <json_engine.hpp>
 
 
-void *json_decode_callback (const char *json)
+void *json_decode_callback (nlohmann::json js)
 {
-    printf("%s", json);
+    std::cout << js.dump(4) << std::endl;
     return nullptr;
 }
 

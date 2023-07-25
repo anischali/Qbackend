@@ -15,7 +15,7 @@ AC_ENABLE_SHARED
 AC_DISABLE_STATIC
 AC_PROG_LIBTOOL(libtool)
 
-PKG_CHECK_MODULES([json_c], [json-c])
+PKG_CHECK_MODULES([nlohmann_json], [nlohmann_json])
 PKG_CHECK_MODULES([libcurl], [libcurl])
 AC_CHECK_DECLS([curl_global_init], [], [], [#include <curl/curl.h>])
 AC_CHECK_DECLS([curl_easy_init], [], [], [#include <curl/curl.h>])

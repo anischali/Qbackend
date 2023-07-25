@@ -6,11 +6,11 @@ EXTRA_CPPFLAGS=-std=c++11 -pthread \
     -I../src/curl \
     -I../src/json \
     -I../src/xml \
-    $(json_c_CFLAGS) \
+    $(nlohmann_json_CFLAGS) \
     $(libcurl_CFLAGS)    
 
 
-EXTRA_LIBS= $(json_c_LIBS) $(libcurl_LIBS) -lm -lrt
+EXTRA_LIBS= $(nlohmann_json_LIBS) $(libcurl_LIBS) -lm -lrt
 
 backend_test_CPPFLAGS = $(CPPFLAGS) $(EXTRA_CPPFLAGS) -fPIC
 
