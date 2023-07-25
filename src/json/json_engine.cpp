@@ -43,7 +43,8 @@ json_engine::json_load(const char *filename, void *(*callback) (const char *json
 
     size = lseek(fd, 0, SEEK_END);
     str = (char *)calloc(size, sizeof(*str));
-
+    lseek(fd, 0, SEEK_SET);
+    
     if ((read(fd, str, (size_t)(size * sizeof(*str)))) <= 0)
         goto free_mem;
 
@@ -67,10 +68,7 @@ json_engine::encode(const void *obj, char *(*callback)(const void *obj))
 void *
 json_engine::decode(const char *json, void *(*callback)(const char *json))
 {
-
-
-
-    if (!callback)
+    if (!callback || !json)
         return nullptr;
 
     return nullptr;
