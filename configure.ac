@@ -31,6 +31,7 @@ AC_CHECK_DECLS([RSA_public_encrypt], [], [], [#include <openssl/rsa.h>])
 AC_CHECK_DECLS([OPENSSL_init_ssl], [], [], [#include <openssl/ssl.h>])
 AC_CHECK_DECLS([EVP_PKEY_new], [], [], [#include <openssl/evp.h>])
 
+PKG_CHECK_MODULES([libfmt], [fmt])
 
 AC_CONFIG_HEADERS([config.h:config.h.in])
 
