@@ -1,7 +1,16 @@
 {
-    "translator_name":"Efendi Nahi",
-    "translation_desc":"Hasan Efendi Nahi",
-    "translator_page":"",
-    "name":"sq.nahi",
-    "url":"https://tanzil.net/trans/?transID={}&type=xml"
+    "translations": [
+        {
+            "language": "albanian",
+            "translations": [
+                {
+                    "translator_name": "Efendi Nahi",
+                    "translation_desc": "Hasan Efendi Nahi",
+                    "translator_page": "",
+                    "name": "sq.nahi",
+                    "url": "https://tanzil.net/trans/?transID={}&type=xml"
+                }
+            ]
+        }
+    ]
 }
