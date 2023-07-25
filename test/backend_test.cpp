@@ -17,4 +17,5 @@ int main(int argc, char **argv)
     json_engine *engine = new json_engine();
     engine->json_load(argv[1], json_decode_callback);
     printf("Usage: test\n");
+    engine->~json_engine();
 } 
