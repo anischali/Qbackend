@@ -49,4 +49,4 @@ AS_CASE([$exec_prefix:$prefix],
 
 echo "	***	Configuring for ... $host	***"
 
-AC_OUTPUT([Makefile] [src/Makefile])
+AC_OUTPUT([Makefile] [src/Makefile] [test/Makefile])
