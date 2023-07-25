@@ -62,8 +62,11 @@ out:
 char *
 json_engine::encode(const void *obj, char *(*callback)(const void *obj))
 {
+    if (!callback || !obj)
+        return nullptr;
 
-};
+    return callback(obj);
+}
 
 void *
 json_engine::decode(const char *json, void *(*callback)(const char *json))
@@ -71,7 +74,7 @@ json_engine::decode(const char *json, void *(*callback)(const char *json))
     if (!callback || !json)
         return nullptr;
 
-    return nullptr;
+    return callback(json);
 }
 
 int

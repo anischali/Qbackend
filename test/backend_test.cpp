@@ -5,6 +5,7 @@
 
 void *json_decode_callback (const char *json)
 {
+    printf("%s", json);
     return nullptr;
 }
 
