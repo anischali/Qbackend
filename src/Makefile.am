@@ -15,6 +15,11 @@ libqbackend_la_LDFLAGS = $(LDFLAGS) -shared -fPIC -module -avoid-version -export
 
 libqbackend_la_LIBADD = $(LIBLTDL) $(EXTRA_LIBS)
 
+libqbackend_la_HEADERS = \
+    json/json_engine.hpp
+
+libqbackend_ladir = "$(includedir)/Qbackend"
+
 libqbackend_la_SOURCES = \
     json/json_engine.cpp
 
