@@ -11,7 +11,7 @@ RUN apt-get install -y build-essential \
     nano python3 curl gnupg libncurses5 clang  \
     python3 pkg-config git curl bzip2 unzip autopoint \
     ninja-build autoconf automake make cmake libtool \
-    libcurl4 libcurlpp-dev libfmt-dev libssl-dev libcurl4-openssl-dev \
+    libcurl4 libcurlpp-dev libfmt-dev libssl-dev libcurl4-openssl-dev
 
 RUN ln -s $(which python3) /usr/bin/python
 
