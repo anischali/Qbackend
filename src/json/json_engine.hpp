@@ -1,6 +1,5 @@
 #ifndef _JSON_ENGINE_HPP
 #define _JSON_ENGINE_HPP
-#include <nlohmann/json_fwd.hpp>
 #include <string>
 #include <nlohmann/json.hpp>
 
