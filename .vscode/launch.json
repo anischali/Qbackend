@@ -4,7 +4,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/test/.libs/backend_test",
+            "program": "${workspaceFolder}/b_x86/backend_test-1.0.1",
             "MIMode": "gdb",
             "args":["${workspaceFolder}/test/example.json"],
             "cwd": "${workspaceFolder}",
