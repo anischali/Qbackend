@@ -7,7 +7,7 @@
 #include <string>
 
 
-
+namespace qbackend::model {
 
 class translations {
     
@@ -22,5 +22,5 @@ public:
 
 };
 
-
+}; // namespace qbackend::model
 #endif

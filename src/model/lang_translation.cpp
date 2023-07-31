@@ -8,6 +8,8 @@
 #include <fmt/core.h>
 
 
+using namespace qbackend::model;
+
 
 lang_translation::lang_translation() :
     language(std::string("")),

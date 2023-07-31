@@ -10,7 +10,7 @@
 
 const static std::string json_fmt = std::string("{\"name\": \"%s\",\"translator_name\": \"%s\",\"translation_desc\": \"%s\",\"translator_page\": \"%s\",\"url\": \"%s\"}");
 
-
+using namespace qbackend::model;
 
 translation::translation() :
     name(std::string("")), translator_name(std::string("")),
