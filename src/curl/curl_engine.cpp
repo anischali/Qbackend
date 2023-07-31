@@ -3,7 +3,7 @@
 #include <iostream>
 
 
-
+using namespace qbackend::engines;
 
 curl_engine::curl_engine()
 {}

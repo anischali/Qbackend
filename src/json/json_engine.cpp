@@ -12,7 +12,7 @@
 
 
 
-using namespace qbackend;
+using namespace qbackend::engines;
 using namespace nlohmann;
 
 
@@ -28,13 +28,13 @@ json_engine::~json_engine()
 
 
 void* 
-json_engine::json_load(const char *filename, void *(*callback) (nlohmann::json js))
+json_engine::json_load(const std::string filename, void *(*callback) (nlohmann::json &js))
 {
     void *obj = nullptr;
     char *str = nullptr;
     size_t size = 0;
 
-    int fd = open(filename, O_RDONLY);
+    int fd = open(filename.c_str(), O_RDONLY);
     if (fd < 0)
         return nullptr;
 
@@ -59,8 +59,8 @@ out:
 }
 
 
-char *
-json_engine::encode(const void *obj, char *(*callback)(const void *obj))
+nlohmann::json
+json_engine::encode(const void *obj, nlohmann::json (*callback)(const void *obj))
 {
     if (!callback || !obj)
         return nullptr;
@@ -69,7 +69,7 @@ json_engine::encode(const void *obj, char *(*callback)(const void *obj))
 }
 
 void *
-json_engine::decode(const char *json_str, void *(*callback)(nlohmann::json js))
+json_engine::decode(const char *json_str, void *(*callback)(nlohmann::json &js))
 {
     if (!callback || !json_str)
         return nullptr;
@@ -80,24 +80,25 @@ json_engine::decode(const char *json_str, void *(*callback)(nlohmann::json js))
 }
 
 int
-json_engine::json_save(const void *obj, const char *filename, char *(*callback)(const void *obj))
+json_engine::json_save(const void *obj, const std::string filename, nlohmann::json (*callback)(const void *obj))
 {
     int fd = -1;
     int err = 0;
-    char *str = nullptr;
+    nlohmann::json js = nullptr;
+    std::string str;
 
-    fd = open(filename, O_WRONLY);
+    fd = open(filename.c_str(), O_WRONLY | O_CREAT, 0666);
     if (fd < 0)
         return -EINVAL;
 
     if (!callback || !obj)
         goto out;
 
-    str = this->encode(obj, callback);
-    if (!str)
-        goto out;
+    js = this->encode(obj, callback);
 
-    if ((write(fd, str, strlen(str)) <= 0))
+    str = js.dump(4);
+
+    if ((write(fd, str.c_str(), str.size()) <= 0))
     {
         err = -EIO;
         goto out;
