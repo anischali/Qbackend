@@ -11,16 +11,14 @@ target_sources(backend_test PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/backend_test.cpp
 )
 
-target_include_directories(backend_test
-    PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}/model
-)
-
-
-set(CMAKE_MODULE_PATH
-    ${CMAKE_CURRENT_LIST_DIR}/model
-)
-
 target_link_libraries(backend_test Qbackend)
 
-include(qmodel_compenent)
+if (${CMAKE_LIBRARY_ARCHITECTURE} MATCHES "^aarch64-linux-android")
+    set(ARCH_EXTRA_DIRS "/home/anicha1/tmp/android")
+elseif(${CMAKE_LIBRARY_ARCHITECTURE} MATCHES "^x86_64-linux-gnu")
+endif()
+
+
+
+find_package(nlohmann_json PATHS ${ARCH_EXTRA_DIRS}/json/share/cmake/nlohmann_json)
+target_link_libraries(backend_test fmt)

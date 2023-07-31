@@ -1,5 +1,5 @@
-#include "model/lang_translation.hpp"
-#include "model/translation.hpp"
+#include <lang_translation.hpp>
+#include <translation.hpp>
 #include <exception>
 #include <iostream>
 #include <cstdio>
@@ -8,7 +8,14 @@
 #include <translation.hpp>
 #include <lang_translation.hpp>
 #include <translations.hpp>
+#include <string>
 #include <fmt/core.h>
+#include <settings.hpp>
+
+using namespace qbackend::engines;
+using namespace qbackend::model;
+
+
 
 
 void *json_decode_callback (nlohmann::json js)
@@ -41,7 +48,7 @@ void *ltjson_decode_callback (nlohmann::json js)
 }
 
 
-void *ltsjson_decode_callback (nlohmann::json js)
+void *ltsjson_decode_callback (nlohmann::json &js)
 {
     translations *t;
     try {
@@ -55,7 +62,6 @@ void *ltsjson_decode_callback (nlohmann::json js)
     return (void *)t;
 }
 
-using namespace qbackend;
 
 
 int main(int argc, char **argv)
@@ -70,5 +76,21 @@ int main(int argc, char **argv)
     printf("tss: %ld\n", lts->supported_translations.size());
     //delete o;
     delete lts;
-    engine->~json_engine();
+    delete engine;
+
+    settings *s = new settings();
+
+    s->id = "quran_app_settings";
+    s->language = "en";
+    s->path = "/home/anicha1/tmp";
+    std::cout << s->path << std::endl;
+    s->save(fmt::format(std::string("{}/{}.json"), s->path, s->id));
+    delete s;
+
+    settings *s2 = new settings();
+    s2->load(fmt::format(std::string("{}/{}.json"), "/home/anicha1/tmp", "quran_app_settings"));
+
+    std::cout << s2->path << " " << s2->id << std::endl;
+
+    delete s2;
 } 
