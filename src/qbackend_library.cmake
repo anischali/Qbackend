@@ -4,7 +4,7 @@ set(QBACKEND_LIBRARY_NAME Qbackend)
 include(GNUInstallDirs)
 include(FetchContent)
 
-add_library(Qbackend SHARED)
+add_library(Qbackend)
 
 set_target_properties(Qbackend PROPERTIES
     VERSION ${PROJECT_VERSION}
@@ -71,6 +71,7 @@ FetchContent_Declare(nlohmann_json
   GIT_TAG v3.11.2
 )
 FetchContent_MakeAvailable(nlohmann_json)
+
 
 
 target_link_libraries(Qbackend PRIVATE
