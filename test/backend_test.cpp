@@ -84,11 +84,11 @@ int main(int argc, char **argv)
     s->language = "en";
     s->path = "/home/anicha1/tmp";
     std::cout << s->path << std::endl;
-    s->save(fmt::format(std::string("{}/{}.json"), s->path, s->id));
+    s->save(fmt::format("{}/{}.json", s->path, s->id));
     delete s;
 
     settings *s2 = new settings();
-    s2->load(fmt::format(std::string("{}/{}.json"), "/home/anicha1/tmp", "quran_app_settings"));
+    s2->load(fmt::format("{}/{}.json", "/home/anicha1/tmp", "quran_app_settings"));
 
     std::cout << s2->path << " " << s2->id << std::endl;
 
