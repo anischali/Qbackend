@@ -2,7 +2,7 @@
 #define __SETTINGS_HPP_
 #include <map>
 #include <nlohmann/json.hpp>
-#include <json_engine.hpp>
+#include "json_engine.hpp"
 #include <string>
 #include <vector>
 
@@ -27,8 +27,10 @@ namespace qbackend::model {
         void load(std::string filename);
         void save(std::string filename);
 
+
+        std::string get_filename() const;
+
         std::string id, language, path;
     };
-
 }; // namespace qbackend::model
 #endif

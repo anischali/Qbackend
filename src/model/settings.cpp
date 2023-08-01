@@ -16,14 +16,13 @@ using namespace qbackend::engines;
 
 settings::settings()
 {
-
-    e = new qbackend::engines::json_engine();
+    e = new json_engine();
 }
 
 settings::~settings()
 {
     delete e;
-    qbackend::model::settings::e = nullptr;
+    this->e = nullptr;
 }
 
 
@@ -66,7 +65,6 @@ void * settings::settings_load_callback(nlohmann::json &js)
 
 nlohmann::json settings::settings_save_callback(const void *obj)
 {
-    std::cout << "Setting" << std::endl;
     nlohmann::json js = ((settings *)obj)->to_json();
     
     std::cout << js.dump(4) << std::endl;
@@ -91,6 +89,12 @@ settings::load(std::string filename)
 void 
 settings::save(std::string filename)
 {
-    std::cout << filename << std::endl;
     e->json_save(this, filename, settings::settings_save_callback);
+}
+
+
+
+std::string settings::get_filename() const
+{
+    return fmt::format("{}/{}.json", this->path, this->id);
 }
