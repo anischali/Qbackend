@@ -13,10 +13,11 @@ set(CMAKE_MODULE_PATH
 include(qbackend_library)
 
 
+
+if (${TEST_PROG})
 set(CMAKE_MODULE_PATH
     ${CMAKE_CURRENT_LIST_DIR}/test
 )
-
 include(backend_test_program)
-
+endif()
 
