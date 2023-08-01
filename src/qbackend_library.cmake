@@ -2,12 +2,19 @@
 set(QBACKEND_LIBRARY_NAME Qbackend)
 
 include(GNUInstallDirs)
+include(FetchContent)
 
 add_library(Qbackend SHARED)
 
 set_target_properties(Qbackend PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION 1
+)
+
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Qbackend.pc.in
+    ${CMAKE_CURRENT_BINARY_DIR}/Qbackend.pc
+    @ONLY
 )
 
 install(TARGETS Qbackend
@@ -17,8 +24,15 @@ install(TARGETS Qbackend
 
 file(GLOB Qbackend_HEADERS ${CMAKE_CURRENT_LIST_DIR}/*/*.hpp)
 
-install(FILES ${Qbackend_HEADERS} 
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Qbackend)
+install(
+    FILES ${Qbackend_HEADERS} 
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Qbackend
+)
+
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/Qbackend.pc
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
+)
 
 target_include_directories(Qbackend
     PUBLIC
@@ -46,15 +60,20 @@ include(storage_engine_compenent)
 include(xml_engine_compenent)
 include(model_compenent)
 
+FetchContent_Declare(fmt
+  GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+  GIT_TAG 9.0.0
+)
+FetchContent_MakeAvailable(fmt)
 
-if (${CMAKE_LIBRARY_ARCHITECTURE} MATCHES "^aarch64-linux-android")
-    set(ARCH_EXTRA_DIRS "/home/anicha1/tmp/android")
-elseif(${CMAKE_LIBRARY_ARCHITECTURE} MATCHES "^x86_64-linux-gnu")
-endif()
+FetchContent_Declare(nlohmann_json
+  GIT_REPOSITORY https://github.com/nlohmann/json.git
+  GIT_TAG v3.11.2
+)
+FetchContent_MakeAvailable(nlohmann_json)
 
 
-
-find_package(nlohmann_json PATHS ${ARCH_EXTRA_DIRS}/json/share/cmake/nlohmann_json)
-find_library(NAME fmt PATHS ${ARCH_EXTRA_DIRS}/fmt/lib)
-
-
+target_link_libraries(Qbackend PRIVATE
+    fmt::fmt
+    nlohmann_json
+)

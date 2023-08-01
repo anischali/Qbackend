@@ -1,0 +1,10 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@/Qbackend
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+
+Name: libQbackend
+Description: "A backend library for Quran Application"
+URL: ""
+Version: @PROJECT_VERSION@
+Libs:-L${libdir} -llibQbackend
+Cflags: -I"${includedir}"
