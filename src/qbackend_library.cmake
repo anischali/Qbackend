@@ -1,7 +1,6 @@
 
 set(QBACKEND_LIBRARY_NAME Qbackend)
 
-include(GNUInstallDirs)
 include(FetchContent)
 
 add_library(Qbackend)

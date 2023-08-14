@@ -1,7 +1,6 @@
 
 add_executable(backend_test)
 
-include(GNUInstallDirs)
 include(FetchContent)
 
 set_target_properties(backend_test PROPERTIES
