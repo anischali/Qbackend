@@ -66,31 +66,16 @@ void *ltsjson_decode_callback (nlohmann::json &js)
 
 int main(int argc, char **argv)
 {
-    //translation *o;
-    translations *lts;
+    settings *s = new settings("/home/anicha1/tmp", "quran_app_settings_1");
+    //s->set_value("quran", "true-false");
+    std::cout << s->path << " " << s->get_value("quran") << " " << std::endl;
 
-    json_engine *engine = new json_engine();
-    //o = (translation *)engine->json_load(argv[1], json_decode_callback);
-    lts = (translations *)engine->json_load(argv[1], ltsjson_decode_callback);
+    settings *s2 = new settings("/home/anicha1/tmp", "quran_app_settings_2");
+    s2->set_value("language", "en");
+    s2->set_value("scale_factor", std::to_string(3));
+    
+    std::cout << s2->path << " " << s2->name << std::endl;
 
-    printf("tss: %ld\n", lts->supported_translations.size());
-    //delete o;
-    delete lts;
-    delete engine;
-
-    settings *s = new settings();
-
-    s->id = "quran_app_settings";
-    s->language = "en";
-    s->path = "/home/anicha1/tmp";
-    std::cout << s->path << std::endl;
-    s->save(fmt::format("{}/{}.json", s->path, s->id));
     delete s;
-
-    settings *s2 = new settings();
-    s2->load(fmt::format("{}/{}.json", "/home/anicha1/tmp", "quran_app_settings"));
-
-    std::cout << s2->path << " " << s2->id << std::endl;
-
     delete s2;
 } 
