@@ -113,5 +113,5 @@ std::string settings::get_value(std::string key)
         return this->m_settings[key];
     }
 
-    return nullptr;
+    return "";
 }
