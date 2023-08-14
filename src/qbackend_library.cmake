@@ -17,22 +17,6 @@ configure_file(
     @ONLY
 )
 
-install(TARGETS Qbackend
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Qbackend/
-)
-
-file(GLOB Qbackend_HEADERS ${CMAKE_CURRENT_LIST_DIR}/*/*.hpp)
-
-install(
-    FILES ${Qbackend_HEADERS} 
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Qbackend
-)
-
-install(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/Qbackend.pc
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
-)
 
 target_include_directories(Qbackend
     PUBLIC
@@ -83,4 +67,21 @@ target_link_libraries(Qbackend PRIVATE
     fmt::fmt
     nlohmann_json
     libcurl
+)
+
+install(TARGETS Qbackend
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Qbackend/
+)
+
+file(GLOB Qbackend_HEADERS ${CMAKE_CURRENT_LIST_DIR}/*/*.hpp)
+
+install(
+    FILES ${Qbackend_HEADERS} 
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Qbackend
+)
+
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/Qbackend.pc
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
 )
