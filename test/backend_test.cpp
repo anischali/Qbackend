@@ -76,6 +76,9 @@ int main(int argc, char **argv)
     
     std::cout << s2->path << " " << s2->name << std::endl;
 
+    curl_engine *e = new curl_engine();
+
     delete s;
     delete s2;
+    delete e;
 } 

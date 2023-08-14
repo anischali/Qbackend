@@ -31,9 +31,17 @@ FetchContent_Declare(nlohmann_json
 FetchContent_MakeAvailable(nlohmann_json)
 
 
+FetchContent_Declare(libcurl
+  GIT_REPOSITORY https://github.com/curl/curl.git
+  GIT_TAG tiny-curl-7_72_0
+)
+FetchContent_MakeAvailable(libcurl)
+
+
 target_link_libraries(backend_test PRIVATE
     fmt::fmt
     nlohmann_json
     Qbackend
+    libcurl
 )
 
