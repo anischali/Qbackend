@@ -11,26 +11,27 @@ namespace qbackend::model {
     class settings {
     
     private:
+        std::map<std::string, std::string> m_settings = std::map<std::string, std::string>();
         qbackend::engines::json_engine *e = nullptr;
         static void * settings_load_callback(nlohmann::json &js);
         static nlohmann::json settings_save_callback(const void *obj);
 
+        void load();
+        void save();
+
     public:
-        settings();
+        std::string name, path;
+        settings(std::string path, std::string name);
         ~settings();
 
-        static settings *from_json(nlohmann::json const &js);
+        static std::map<std::string, std::string> * from_json(nlohmann::json const &js);
         const nlohmann::json to_json(void) const;
-
-
-
-        void load(std::string filename);
-        void save(std::string filename);
-
 
         std::string get_filename() const;
 
-        std::string id, language, path;
+
+        std::string get_value(std::string key);
+        void set_value(std::string key, std::string value);
     };
 }; // namespace qbackend::model
 #endif

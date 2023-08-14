@@ -1,4 +1,5 @@
 #include "settings.hpp"
+#include <cstddef>
 #include <exception>
 #include <functional>
 #include <map>
@@ -7,6 +8,7 @@
 #include <string>
 #include <iostream>
 #include <fmt/core.h>
+#include <map>
 
 
 
@@ -14,9 +16,20 @@
 using namespace qbackend::model;
 using namespace qbackend::engines;
 
-settings::settings()
+settings::settings(std::string path, std::string name)
 {
     e = new json_engine();
+    this->path = path;
+    this->name = name;
+
+    if (std::filesystem::exists(get_filename()))
+    {
+        load();
+    }
+    else 
+    {
+        save();
+    }
 }
 
 settings::~settings()
@@ -26,41 +39,27 @@ settings::~settings()
 }
 
 
-settings * 
+std::map<std::string, std::string> *
 settings::from_json(nlohmann::json const &js)
-{
-    
-    if (!js.contains("id") ||
-        !js.contains("language") ||
-        !js.contains("path"))
-            throw std::invalid_argument(std::string("json data corrupted"));
+{   
+    if (js.empty())
+        return nullptr;
 
-    settings *stg = new settings();
-    
-    stg->id = js["id"];
-    stg->language = js["language"];
-    stg->path = js["path"];
-
-    return stg;  
+    std::map<std::string, std::string> map = (std::map<std::string, std::string>)js.get<std::map<std::string, std::string>>();
+    return new std::map<std::string, std::string>(map.begin(), map.end());
 }
 
 
 const nlohmann::json settings::to_json(void) const
 {
-    std::map<std::string, std::string> m = {
-        {"id", this->id},
-        {"language", this->language},
-        {"path", this->path}
-    };
-
-    return nlohmann::json(m);
+    return nlohmann::json(m_settings);
 }
 
 
 
 void * settings::settings_load_callback(nlohmann::json &js)
 {
-    return settings::from_json(js);
+    return (void *)settings::from_json(js);
 }
 
 nlohmann::json settings::settings_save_callback(const void *obj)
@@ -74,27 +73,45 @@ nlohmann::json settings::settings_save_callback(const void *obj)
 
 
 void 
-settings::load(std::string filename)
+settings::load()
 {
-    settings *s = (settings *)e->json_load(filename, settings::settings_load_callback);
-
-    this->id = s->id;
-    this->language = s->language;
-    this->path = s->path;
-
-    delete s;
+    auto s = (std::map<std::string, std::string> *)e->json_load(get_filename(), settings::settings_load_callback);
+    if (s != nullptr)
+    {
+        this->m_settings = std::map<std::string, std::string>(s->begin(), s->end());
+        delete s;
+    }
 }
 
 
 void 
-settings::save(std::string filename)
+settings::save()
 {
-    e->json_save(this, filename, settings::settings_save_callback);
+    e->json_save(this, get_filename(), settings::settings_save_callback);
 }
 
 
 
 std::string settings::get_filename() const
 {
-    return fmt::format("{}/{}.json", this->path, this->id);
+    return fmt::format("{}/{}.json", this->path, this->name);
+}
+
+
+
+void settings::set_value(const std::string key, const std::string value)
+{
+    this->m_settings[key] = value;
+    this->save();
+}
+
+
+std::string settings::get_value(std::string key)
+{
+    if (this->m_settings.find(key) != this->m_settings.end())  
+    {
+        return this->m_settings[key];
+    }
+
+    return nullptr;
 }
