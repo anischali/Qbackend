@@ -76,7 +76,9 @@ int main(int argc, char **argv)
     
     std::cout << s2->path << " " << s2->name << std::endl;
 
-    curl_engine *e = new curl_engine();
+    web_engine *e = new web_engine();
+
+    web_engine::fetch_file("https://tanzil.net", fmt::format("/trans/?transID={}&type=xml", "sq.nahi"), argc >= 2 ? argv[1] : "/tmp/sq.nahi.xml");
 
     delete s;
     delete s2;
