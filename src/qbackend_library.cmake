@@ -16,7 +16,7 @@ set_target_properties(Qbackend PROPERTIES
 target_include_directories(Qbackend
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/audio
-        ${CMAKE_CURRENT_LIST_DIR}/curl
+        ${CMAKE_CURRENT_LIST_DIR}/web
         ${CMAKE_CURRENT_LIST_DIR}/json
         ${CMAKE_CURRENT_LIST_DIR}/storage
         ${CMAKE_CURRENT_LIST_DIR}/xml
@@ -25,7 +25,7 @@ target_include_directories(Qbackend
 
 set(CMAKE_MODULE_PATH
     ${CMAKE_CURRENT_LIST_DIR}/audio
-    ${CMAKE_CURRENT_LIST_DIR}/curl
+    ${CMAKE_CURRENT_LIST_DIR}/web
     ${CMAKE_CURRENT_LIST_DIR}/json
     ${CMAKE_CURRENT_LIST_DIR}/storage
     ${CMAKE_CURRENT_LIST_DIR}/xml
@@ -33,7 +33,7 @@ set(CMAKE_MODULE_PATH
 )
 
 include(audio_engine_compenent)
-include(curl_engine_compenent)
+include(web_engine_compenent)
 include(json_engine_compenent)
 include(storage_engine_compenent)
 include(xml_engine_compenent)
@@ -51,17 +51,17 @@ FetchContent_Declare(nlohmann_json
 )
 FetchContent_MakeAvailable(nlohmann_json)
 
-FetchContent_Declare(libcurl
-  GIT_REPOSITORY https://github.com/curl/curl.git
-  GIT_TAG tiny-curl-7_72_0
+FetchContent_Declare(httplib
+  GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git
+  GIT_TAG v0.13.3
 )
-FetchContent_MakeAvailable(libcurl)
+FetchContent_MakeAvailable(httplib)
 
 
 target_link_libraries(Qbackend PRIVATE
     fmt::fmt
     nlohmann_json
-    libcurl
+    httplib::httplib
 )
 
 configure_file(
