@@ -67,11 +67,7 @@ void *ltsjson_decode_callback (nlohmann::json &js)
 
 int main(int argc, char **argv)
 {
-    settings *s = new settings("/home/anicha1/tmp", "quran_app_settings_1");
-    //s->set_value("quran", "true-false");
-    std::cout << s->path << " " << s->get_value("quran") << " " << std::endl;
-
-    settings *s2 = new settings("/home/anicha1/tmp", "quran_app_settings_2");
+    settings *s2 = new settings("/home/anicha1/.config/org.test.com", "quran_app_settings_2");
     s2->set_value("language", "en");
     s2->set_value("scale_factor", std::to_string(3));
     
@@ -84,7 +80,6 @@ int main(int argc, char **argv)
 
     std::cout << storage_engine::create_directory(argv[1], true) << std::endl;
 
-    delete s;
     delete s2;
     delete e;
 } 
