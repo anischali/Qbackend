@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <json_engine.hpp>
+#include <storage_engine.hpp>
 #include <translation.hpp>
 #include <lang_translation.hpp>
 #include <translations.hpp>
@@ -78,7 +79,10 @@ int main(int argc, char **argv)
 
     web_engine *e = new web_engine();
 
-    web_engine::fetch_file("https://tanzil.net", fmt::format("/trans/?transID={}&type=xml", "sq.nahi"), argc >= 2 ? argv[1] : "/tmp/sq.nahi.xml");
+    web_engine::fetch_file("https://tanzil.net", fmt::format("/trans/?transID={}&type=xml", "sq.nahi"), "/tmp/sq.nahi.xml");
+
+
+    std::cout << storage_engine::create_directory(argv[1], true) << std::endl;
 
     delete s;
     delete s2;
