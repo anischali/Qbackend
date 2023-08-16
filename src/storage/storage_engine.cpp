@@ -43,8 +43,8 @@ int storage_engine::create_directory(std::string pathname, bool recursive)
     char *pname = (char *)pathname.c_str(), *ptr, *token, *save_ptr;
     ptr = token = save_ptr = nullptr;
     struct stat st;
-    std::string subdirs = "";
-    
+    std::string subdirs = (pname[0] == '/') ? "/" : "";
+
     if (!recursive && stat(token, &st) < 0)
     {
         return mkdir(pname, 0777);
@@ -55,10 +55,9 @@ int storage_engine::create_directory(std::string pathname, bool recursive)
         token = strtok_r(ptr, "/", &save_ptr);
         if (token == nullptr)
             break;
-
+        
         subdirs += fmt::format("{}/", token);
-        if (stat(token, &st) < 0) {
-            std::cout << subdirs << std::endl;
+        if (stat(subdirs.c_str(), &st) < 0) {
             ret = mkdir(subdirs.c_str(), 0777);
         }
     }
