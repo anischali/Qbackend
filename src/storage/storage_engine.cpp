@@ -16,7 +16,7 @@ bool storage_engine::file_exist(std::string filename) {
     if (stat(filename.c_str(), &st) < 0)
         return false;
 
-    return (st.st_mode & S_IFREG || st.st_mode & S_IFLNK) > 0;
+    return (S_ISREG(st.st_mode) || S_ISLNK(st.st_mode));
 }
 
 
@@ -28,7 +28,7 @@ bool storage_engine::path_exist(std::string pathname)
     if (stat(pathname.c_str(), &st) < 0)
         return false;
 
-    return (st.st_mode & S_IFDIR) > 0;
+    return S_ISDIR(st.st_mode);
 }
 
 
