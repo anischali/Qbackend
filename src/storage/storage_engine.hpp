@@ -10,9 +10,9 @@ namespace qbackend::engines {
         ~storage_engine();
 
         static bool file_exist(std::string filename);
-        static bool path_exist(std::string path);
+        static bool path_exist(std::string pathname);
     
-        static void create_directory(std::string path, bool recursive);
+        static void create_directory(std::string pathname, bool recursive);
         static void create_file(std::string filename, int mode);
     };
 };
