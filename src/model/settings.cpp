@@ -23,13 +23,12 @@ settings::settings(std::string path, std::string name)
     this->path = path;
     this->name = name;
 
+    if (!storage_engine::path_exist(this->path))
+        storage_engine::create_directory(this->path, true);
+
     if (storage_engine::file_exist(get_filename()))
     {
         load();
-    }
-    else 
-    {
-        save();
     }
 }
 
@@ -66,9 +65,6 @@ void * settings::settings_load_callback(nlohmann::json &js)
 nlohmann::json settings::settings_save_callback(const void *obj)
 {
     nlohmann::json js = ((settings *)obj)->to_json();
-    
-    std::cout << js.dump(4) << std::endl;
-
     return js;
 }
 
