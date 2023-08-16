@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fmt/core.h>
 #include <map>
+#include <storage_engine.hpp>
 
 
 
@@ -22,7 +23,7 @@ settings::settings(std::string path, std::string name)
     this->path = path;
     this->name = name;
 
-    if (std::filesystem::exists(get_filename()))
+    if (storage_engine::file_exist(get_filename()))
     {
         load();
     }
