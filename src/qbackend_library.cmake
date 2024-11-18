@@ -21,6 +21,7 @@ target_include_directories(Qbackend
         ${CMAKE_CURRENT_LIST_DIR}/storage
         ${CMAKE_CURRENT_LIST_DIR}/xml
         ${CMAKE_CURRENT_LIST_DIR}/model
+        ${CMAKE_CURRENT_LIST_DIR}/net
 )
 
 set(CMAKE_MODULE_PATH
@@ -30,6 +31,7 @@ set(CMAKE_MODULE_PATH
     ${CMAKE_CURRENT_LIST_DIR}/storage
     ${CMAKE_CURRENT_LIST_DIR}/xml
     ${CMAKE_CURRENT_LIST_DIR}/model
+    ${CMAKE_CURRENT_LIST_DIR}/net
 )
 
 include(audio_engine_compenent)
@@ -38,6 +40,7 @@ include(json_engine_compenent)
 include(storage_engine_compenent)
 include(xml_engine_compenent)
 include(model_compenent)
+include(net_compenent)
 
 FetchContent_Declare(fmt
   GIT_REPOSITORY https://github.com/fmtlib/fmt.git
