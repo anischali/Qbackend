@@ -134,11 +134,15 @@ int stun_client::stun_request(const char *stun_hostname, short stun_port) {
     return stun_request(stun_server);
 }
 
-/*
+#if defined(STUN_CLIENT_EXEC)
+//stun:stun.l.google.com 19302
 int main(int argc, char *argv[]) {
+
+    if (argc < 2)
+        return -1;
+
     srand(time(NULL));
     stun_client stun;
-
     int ret = stun.stun_request(argv[1], atoi(argv[2]));
 
     printf("ret: %d ip addr: %s port: %d\n", ret, inet_ntoa(stun.ext_ip.sin_addr), stun.ext_ip.sin_port);
@@ -147,4 +151,4 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
-*/
+#endif
