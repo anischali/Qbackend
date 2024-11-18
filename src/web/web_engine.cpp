@@ -44,3 +44,17 @@ web_engine::fetch_file(std::string host, std::string link, std::string destinati
 
     return 0;
 }
+
+
+int
+web_engine::request(std::string host, std::string link, std::string *output)
+{
+    auto req = httplib::Client(fmt::format("{}:{}", host, host.find("https") != std::string::npos ? "443" : "80")).Get(link);
+    if (req != nullptr && req->status == 200)
+    {
+        *output = req->body;
+        return 0;
+    }
+
+    return -EINVAL;
+}

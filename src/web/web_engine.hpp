@@ -13,6 +13,7 @@ public:
 
 
     static int fetch_file(std::string host, std::string link, std::string destination);
+    static int request(std::string host, std::string link, std::string *output);
 };
 };
 
