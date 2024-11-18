@@ -1,5 +1,6 @@
 #include "stun_client.hpp"
 #include <errno.h>
+#include <time.h>
 #include <string>
 
 
@@ -15,9 +16,14 @@ static inline bool c_array_cmp(uint8_t a1[], uint8_t a2[], int len) {
     return len == 0;
 }
 
-
 stun_client::stun_client(short port) : 
     port{port}, ext_ip{0}
+{
+    fd = socket(AF_INET, SOCK_DGRAM, 0);
+}
+
+stun_client::stun_client() : 
+    port{ (short)((rand() % 0xffff) + 2048) }, ext_ip{0}
 {
     fd = socket(AF_INET, SOCK_DGRAM, 0);
 }
@@ -75,7 +81,7 @@ int stun_client::stun_request(struct sockaddr_in stun_server) {
     for (i = 0; i < len; i += (4 + attr_len)) {
         attr_type = ntohs(*(int16_t*)(&attrs[i]));
         attr_len = ntohs(*(int16_t*)(&attrs[i + 2]));
-        printf("%d\n", i);
+
         if (attr_type == 0x020) {
             ext_ip.sin_port = (*(int16_t *)(&attrs[i + 6]));
             ext_ip.sin_port ^= ((uint16_t)response.magic_cookie);
@@ -128,8 +134,10 @@ int stun_client::stun_request(const char *stun_hostname, short stun_port) {
     return stun_request(stun_server);
 }
 
+/*
 int main(int argc, char *argv[]) {
-    stun_client stun(55625);
+    srand(time(NULL));
+    stun_client stun;
 
     int ret = stun.stun_request(argv[1], atoi(argv[2]));
 
@@ -139,3 +147,4 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+*/

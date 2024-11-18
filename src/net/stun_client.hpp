@@ -41,6 +41,7 @@ private:
 public:
     struct sockaddr_in ext_ip;
     stun_client(short port);
+    stun_client();
     ~stun_client();
 
     int stun_request(struct sockaddr_in stun_server);
