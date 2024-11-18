@@ -22,6 +22,7 @@ target_include_directories(Qbackend
         ${CMAKE_CURRENT_LIST_DIR}/xml
         ${CMAKE_CURRENT_LIST_DIR}/model
         ${CMAKE_CURRENT_LIST_DIR}/net
+        ${CMAKE_CURRENT_LIST_DIR}/ssl
 )
 
 set(CMAKE_MODULE_PATH
@@ -32,6 +33,7 @@ set(CMAKE_MODULE_PATH
     ${CMAKE_CURRENT_LIST_DIR}/xml
     ${CMAKE_CURRENT_LIST_DIR}/model
     ${CMAKE_CURRENT_LIST_DIR}/net
+    ${CMAKE_CURRENT_LIST_DIR}/ssl
 )
 
 include(audio_engine_compenent)
@@ -41,6 +43,7 @@ include(storage_engine_compenent)
 include(xml_engine_compenent)
 include(model_compenent)
 include(net_compenent)
+include(ssl_compenent)
 
 FetchContent_Declare(fmt
   GIT_REPOSITORY https://github.com/fmtlib/fmt.git
@@ -65,6 +68,7 @@ target_link_libraries(Qbackend PRIVATE
     fmt::fmt
     nlohmann_json
     httplib::httplib
+    openssl
 )
 
 configure_file(
