@@ -68,7 +68,6 @@ target_link_libraries(Qbackend PRIVATE
     fmt::fmt
     nlohmann_json
     httplib::httplib
-    openssl
 )
 
 configure_file(
