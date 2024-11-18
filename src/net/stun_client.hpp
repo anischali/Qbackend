@@ -7,11 +7,7 @@
 #include <unistd.h>
 #include <stdint.h>
 #include <string.h>
-#if defined(__linux__)
 #include <sys/socket.h>
-#elif defined(__ANDROID__)
-#include <android/net/sockets.h>
-#endif
 
 
 struct __attribute__((packed)) stun_request_t {

@@ -37,10 +37,10 @@ int stun_client::stun_request(struct sockaddr_in stun_server) {
     struct sockaddr_in laddr;  
     struct stun_request_t request;
     struct stun_response_t response;
-    int ret, len, i;
-    struct timeval tv;
-    uint8_t *attrs;
+    struct timeval tv = { .tv_sec = 5 };
     uint16_t attr_len = 0, attr_type = 0;
+    int ret = 1, len, i;
+    uint8_t *attrs;
 
     bzero(&laddr, sizeof(laddr));
     laddr.sin_family = AF_INET;
@@ -49,6 +49,10 @@ int stun_client::stun_request(struct sockaddr_in stun_server) {
     if (fd < 0) {
         err_ret("Invalid socket fd", fd);
     }
+
+    setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, (char*)&tv, sizeof(tv));
+    setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &ret, sizeof(ret));
+
     ret = bind(fd, (struct sockaddr *)&laddr, sizeof(laddr));
     if (ret < 0) {
         err_ret("Failed to bind", ret);
@@ -59,8 +63,6 @@ int stun_client::stun_request(struct sockaddr_in stun_server) {
         err_ret("Failed to send data", ret);
     }
 
-    tv.tv_sec = 5;
-    setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, (char*)&tv, sizeof(tv));
     ret = recvfrom(fd, &response, sizeof(response), 0, NULL, 0);
     if (ret < 0) {
         err_ret("Failed to recv data", ret);
