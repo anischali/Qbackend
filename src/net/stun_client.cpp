@@ -1,11 +1,20 @@
 #include "stun_client.hpp"
 #include <errno.h>
+#include <string>
+
 
 #define err_ret(msg, err) \
     printf("%d: %s\n", err, msg); \
     return err
 
 #define min(x, y) x < y ? x : y
+
+static inline bool c_array_cmp(uint8_t a1[], uint8_t a2[], int len) {
+    
+    while(len-- > 0 && *(a1++) != *(a2++));
+    return len == 0;
+}
+
 
 stun_client::stun_client(short port) : 
     port{port}, ext_ip{0}
@@ -54,7 +63,7 @@ int stun_client::stun_request(struct sockaddr_in stun_server) {
     if (response.magic_cookie != request.magic_cookie)
         return -EINVAL;
 
-    if (response.transaction_id != request.transaction_id)
+    if (c_array_cmp(response.transaction_id, request.transaction_id, sizeof(request.transaction_id)))
         return -EINVAL;
 
     if (response.msg_type != htons(0x0101))
@@ -64,18 +73,17 @@ int stun_client::stun_request(struct sockaddr_in stun_server) {
     len = min(response.msg_len, sizeof(response.attributes));
 
     for (i = 0; i < len; i += (4 + attr_len)) {
-        attr_type = htons(*(int16_t*)(&attrs[i]));
-        attr_len = htons(*(int16_t*)(&attrs[i + 2]));
+        attr_type = ntohs(*(int16_t*)(&attrs[i]));
+        attr_len = ntohs(*(int16_t*)(&attrs[i + 2]));
         printf("%d\n", i);
         if (attr_type == 0x020) {
-            ext_ip.sin_port = ntohs(*(int16_t*)(&attrs[i + 6]));
-            ext_ip.sin_port ^= (request.magic_cookie  >> 16);
+            ext_ip.sin_port = (*(int16_t *)(&attrs[i + 6]));
+            ext_ip.sin_port ^= ((uint16_t)response.magic_cookie);
+            ext_ip.sin_port = htons(ext_ip.sin_port);
 
-            ext_ip.sin_addr.s_addr = (attrs[i + 8] ^ ((request.magic_cookie & 0xff000000) >> 24) | 
-                            attrs[i + 9] ^ ((request.magic_cookie & 0x00ff0000) >> 16) |
-                            attrs[i + 10] ^ ((request.magic_cookie & 0x0000ff00) >> 8) |
-                            attrs[i + 11] ^ ((request.magic_cookie & 0x000000ff) >> 0));
-
+            ext_ip.sin_addr.s_addr = (*(uint32_t *)&attrs[i + 8]);
+            ext_ip.sin_addr.s_addr ^= response.magic_cookie;
+            
             return 0;
         }
     }
@@ -114,21 +122,20 @@ int stun_client::stun_request(const char *stun_hostname, short stun_port) {
     
     freeaddrinfo(servinfo);
 
-    stun_server.sin_port = htons(port);
+    stun_server.sin_port = htons(stun_port);
     stun_server.sin_family = AF_INET;
 
     return stun_request(stun_server);
 }
 
-/*
-int main() {
+int main(int argc, char *argv[]) {
     stun_client stun(55625);
 
-    int ret = stun.stun_request("stun:stun.l.google.com", 19302);
+    int ret = stun.stun_request(argv[1], atoi(argv[2]));
 
     printf("ret: %d ip addr: %s port: %d\n", ret, inet_ntoa(stun.ext_ip.sin_addr), stun.ext_ip.sin_port);
 
     stun.~stun_client();
 
     return 0;
-}*/
+}
