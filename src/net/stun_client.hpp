@@ -16,10 +16,17 @@ struct __attribute__((packed)) stun_request_t {
         for (int i = 0; i < sizeof(transaction_id); ++i) {
             transaction_id[i] = rand() % 256;
             if (i < 9) {
-                if (i == 5)
+                if (i == 4)
                     attributes[4 + i] = ':';
                 else
-                    attributes[4 + i] = (uint8_t)(rand() % ('z' - 'A' + 1) + 'A');
+                {
+                    uint8_t c;
+                    do {
+                        c = (uint8_t)(rand() % ('z' - 'A' + 1) + 'A');
+                    } while(c == ' ');
+
+                    attributes[4 + i] = c;
+                }
             }   
         }
 

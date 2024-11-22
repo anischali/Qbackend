@@ -78,7 +78,7 @@ int stun_client::stun_request(struct sockaddr_in stun_server) {
 int stun_client::stun_request(const char *stun_hostname, short stun_port) {
     struct sockaddr_in *addr;
     struct addrinfo hints, *servinfo, *p;
-    struct sockaddr_in* h;
+    struct sockaddr_in *h;
     char *hostname, *service, hst[512];
     int ret;
     
@@ -104,6 +104,7 @@ int stun_client::stun_request(const char *stun_hostname, short stun_port) {
     }
     
     freeaddrinfo(servinfo);
+    servinfo = NULL;
 
     stun_server.sin_port = htons(stun_port);
     stun_server.sin_family = AF_INET;
@@ -141,7 +142,9 @@ public:
     };
 
     ~udp_peer_connection() {
-        delete cstun;
+        cstun->~stun_client();
+        delete(cstun);
+        close(sock_fd);
     };
 
 
@@ -204,7 +207,7 @@ void visichat_sender(void *args) {
     }
 }
 
-#if defined(STUN_CLIENT_EXEC)
+//#if defined(STUN_CLIENT_EXEC)
 //stun:stun.l.google.com 19302
 int main(int argc, char *argv[]) {
 
@@ -213,6 +216,7 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
+    srand(time(NULL));
     udp_peer_connection conn(atoi(argv[3]));
     
     int ret = conn.cstun->stun_request(argv[1], atoi(argv[2]));
@@ -233,6 +237,8 @@ int main(int argc, char *argv[]) {
     sender.join();
     recver.join();
 
+    conn.~udp_peer_connection();
+
     return 0;
 }
-#endif
+//#endif
