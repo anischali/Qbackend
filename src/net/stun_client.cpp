@@ -2,7 +2,8 @@
 #include <errno.h>
 #include <time.h>
 #include <string>
-
+#include <thread>
+#include <vector>
 
 #define err_ret(msg, err) \
     printf("%d: %s\n", err, msg); \
@@ -16,54 +17,28 @@ static inline bool c_array_cmp(uint8_t a1[], uint8_t a2[], int len) {
     return len == 0;
 }
 
-stun_client::stun_client(short port) : 
-    port{port}, ext_ip{0}
-{
-    fd = socket(AF_INET, SOCK_DGRAM, 0);
-}
-
-stun_client::stun_client() : 
-    port{ (short)((rand() % 0xffff) + 2048) }, ext_ip{0}
-{
-    fd = socket(AF_INET, SOCK_DGRAM, 0);
-}
+stun_client::stun_client(int socket_fd) : 
+    _socket{socket_fd}, ext_ip{0}
+{}
 
 stun_client::~stun_client()
 {
-    close(fd);
 }
 
 int stun_client::stun_request(struct sockaddr_in stun_server) {
     struct sockaddr_in laddr;  
     struct stun_request_t request;
     struct stun_response_t response;
-    struct timeval tv = { .tv_sec = 5 };
     uint16_t attr_len = 0, attr_type = 0;
-    int ret = 1, len, i;
+    int ret, len, i;
     uint8_t *attrs;
 
-    bzero(&laddr, sizeof(laddr));
-    laddr.sin_family = AF_INET;
-    laddr.sin_port = htons(port);
-
-    if (fd < 0) {
-        err_ret("Invalid socket fd", fd);
-    }
-
-    setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, (char*)&tv, sizeof(tv));
-    setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &ret, sizeof(ret));
-
-    ret = bind(fd, (struct sockaddr *)&laddr, sizeof(laddr));
-    if (ret < 0) {
-        err_ret("Failed to bind", ret);
-    }
-    
-    ret = sendto(fd, &request, sizeof(request), 0, (struct sockaddr *)&stun_server, sizeof(stun_server));
+    ret = sendto(_socket, &request, sizeof(request), 0, (struct sockaddr *)&stun_server, sizeof(stun_server));
     if (ret < 0) {
         err_ret("Failed to send data", ret);
     }
 
-    ret = recvfrom(fd, &response, sizeof(response), 0, NULL, 0);
+    ret = recvfrom(_socket, &response, sizeof(response), 0, NULL, 0);
     if (ret < 0) {
         err_ret("Failed to recv data", ret);
     }
@@ -87,7 +62,7 @@ int stun_client::stun_request(struct sockaddr_in stun_server) {
         if (attr_type == 0x020) {
             ext_ip.sin_port = (*(int16_t *)(&attrs[i + 6]));
             ext_ip.sin_port ^= ((uint16_t)response.magic_cookie);
-            ext_ip.sin_port = htons(ext_ip.sin_port);
+            ext_ip.sin_port = ext_ip.sin_port;
 
             ext_ip.sin_addr.s_addr = (*(uint32_t *)&attrs[i + 8]);
             ext_ip.sin_addr.s_addr ^= response.magic_cookie;
@@ -101,7 +76,7 @@ int stun_client::stun_request(struct sockaddr_in stun_server) {
 
 
 int stun_client::stun_request(const char *stun_hostname, short stun_port) {
-    struct sockaddr_in stun_server, *addr;
+    struct sockaddr_in *addr;
     struct addrinfo hints, *servinfo, *p;
     struct sockaddr_in* h;
     char *hostname, *service, hst[512];
@@ -136,20 +111,127 @@ int stun_client::stun_request(const char *stun_hostname, short stun_port) {
     return stun_request(stun_server);
 }
 
+
+class udp_peer_connection {
+
+public:
+    struct sockaddr_in local;
+    stun_client *cstun;
+    int sock_fd;
+    struct sockaddr_in remote;
+
+    udp_peer_connection(short port) {
+        timeval tv = { .tv_sec = 5 };
+        int enable = 1;
+        
+        sock_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+        if (sock_fd > 0) {
+            setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable));
+            setsockopt(sock_fd, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(enable));
+            setsockopt(sock_fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+        }
+
+        local.sin_addr.s_addr = INADDR_ANY;
+        local.sin_family = AF_INET;
+        local.sin_port = htons(port);
+
+        bind(sock_fd, (struct sockaddr *)&local, sizeof(local));
+
+        cstun = new stun_client(sock_fd);
+    };
+
+    ~udp_peer_connection() {
+        delete cstun;
+    };
+
+
+
+    void set_remote(struct sockaddr_in remote_peer) {
+        memcpy(&remote, &remote_peer, sizeof(remote));
+    };
+
+};
+
+void visichat_listener(void *args) {
+    int ret;
+    static char buf[512];
+    udp_peer_connection *conn = (udp_peer_connection *)args; 
+    socklen_t len = sizeof(conn->remote);
+    struct sockaddr_in s_addr;
+
+    printf("receiver thread start [OK]\n");
+
+    while(true) {
+        ret = recvfrom(conn->sock_fd, buf, 512, 0, (struct sockaddr *)&s_addr, &len);
+        if (ret < 0 || buf[0] == 0)
+            continue;
+
+        buf[ret] = 0;
+
+        if (!strncmp("exit", &buf[0], 4))
+            continue;
+
+        fprintf(stdout, "[%s:%d]: %s\n\r> ", inet_ntoa(s_addr.sin_addr), ntohs(s_addr.sin_port), buf);
+    }
+}
+
+void visichat_sender(void *args) {
+    int cnt = 0;
+    char c = 0;
+    static char buf[512];
+    udp_peer_connection *conn = (udp_peer_connection *)args;
+
+    printf("sender thread start [OK]\n");
+
+    while(true) {
+        printf("\r> ");
+        while((c = getc(stdin)) != '\n') {
+            buf[cnt] = c;
+            cnt = ((cnt + 1) % sizeof(buf));
+        }
+
+        if (cnt <= 0)
+            continue;
+
+        sendto(conn->sock_fd, buf, cnt, 0, (struct sockaddr *)&conn->remote, sizeof(conn->remote));
+        cnt = 0;
+
+        if (!strncmp("exit", &buf[0], 4)) {
+            sleep(1);
+            printf("sender thread stop [OK]\n");
+            return;
+        }
+    }
+}
+
 #if defined(STUN_CLIENT_EXEC)
 //stun:stun.l.google.com 19302
 int main(int argc, char *argv[]) {
 
-    if (argc < 2)
+    if (argc < 4) {
+        printf("wrong arguments number !\n");
         return -1;
+    }
 
-    srand(time(NULL));
-    stun_client stun;
-    int ret = stun.stun_request(argv[1], atoi(argv[2]));
+    udp_peer_connection conn(atoi(argv[3]));
+    
+    int ret = conn.cstun->stun_request(argv[1], atoi(argv[2]));
+    if (ret < 0) {
+        conn.~udp_peer_connection();
+        return ret;
+    }
 
-    printf("ret: %d ip addr: %s port: %d\n", ret, inet_ntoa(stun.ext_ip.sin_addr), stun.ext_ip.sin_port);
+    conn.remote.sin_addr.s_addr = conn.cstun->ext_ip.sin_addr.s_addr;/*htonl(inet_network("192.168.0.10"));*/
+    conn.remote.sin_family = conn.cstun->ext_ip.sin_family;
+    conn.remote.sin_port = htons(atoi(argv[4]));
 
-    stun.~stun_client();
+    printf("bind: %s [%d]\n", inet_ntoa(conn.remote.sin_addr), ntohs(conn.local.sin_port));
+
+    std::thread recver(visichat_listener, &conn);
+    std::thread sender(visichat_sender, &conn);
+
+    sender.join();
+    recver.join();
 
     return 0;
 }
