@@ -10,6 +10,9 @@
 #include <sys/socket.h>
 
 
+
+
+
 struct __attribute__((packed)) stun_request_t {
     stun_request_t() {
         memset(attributes, 0x0, sizeof(attributes));
@@ -23,7 +26,7 @@ struct __attribute__((packed)) stun_request_t {
                     uint8_t c;
                     do {
                         c = (uint8_t)(rand() % ('z' - 'A' + 1) + 'A');
-                    } while(c == ' ');
+                    } while(c > 'Z' && c < 'a');
 
                     attributes[4 + i] = c;
                 }
