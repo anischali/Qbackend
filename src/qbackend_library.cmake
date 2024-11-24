@@ -21,7 +21,6 @@ target_include_directories(Qbackend
         ${CMAKE_CURRENT_LIST_DIR}/storage
         ${CMAKE_CURRENT_LIST_DIR}/xml
         ${CMAKE_CURRENT_LIST_DIR}/model
-        ${CMAKE_CURRENT_LIST_DIR}/net
         ${CMAKE_CURRENT_LIST_DIR}/ssl
 )
 
@@ -32,7 +31,6 @@ set(CMAKE_MODULE_PATH
     ${CMAKE_CURRENT_LIST_DIR}/storage
     ${CMAKE_CURRENT_LIST_DIR}/xml
     ${CMAKE_CURRENT_LIST_DIR}/model
-    ${CMAKE_CURRENT_LIST_DIR}/net
     ${CMAKE_CURRENT_LIST_DIR}/ssl
 )
 
@@ -42,7 +40,6 @@ include(json_engine_compenent)
 include(storage_engine_compenent)
 include(xml_engine_compenent)
 include(model_compenent)
-include(net_compenent)
 include(ssl_compenent)
 
 FetchContent_Declare(fmt

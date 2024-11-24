@@ -70,18 +70,18 @@ int main(int argc, char *argv[]) {
     
     srand(time(NULL));
     udp_peer_connection conn(atoi(argv[3]));
-    stun_client stun(conn.sock_fd);
+    //stun_client stun(conn.sock_fd);
 
-    int ret = stun.stun_request(argv[1], atoi(argv[2]));
-    printf("STUN: %s [%d]\n", inet_ntoa(stun.ext_ip.sin_addr), ntohs(stun.ext_ip.sin_port));
-    if (ret < 0) {
-        conn.~udp_peer_connection();
-        return ret;
-    }
+    //int ret = stun.stun_request(argv[1], atoi(argv[2]));
+    //printf("STUN: %s [%d]\n", inet_ntoa(stun.ext_ip.sin_addr), ntohs(stun.ext_ip.sin_port));
+    //if (ret < 0) {
+    //    conn.~udp_peer_connection();
+    //    return ret;
+    //}
 
-    conn.remote.sin_addr.s_addr = stun.ext_ip.sin_addr.s_addr;//htonl(inet_network("192.168.0.10"));
-    conn.remote.sin_family = stun.ext_ip.sin_family;
-    conn.remote.sin_port = htons(atoi   (argv[4]));
+    conn.remote.sin_addr.s_addr = htonl(inet_network("24.48.39.41"));//stun.ext_ip.sin_addr.s_addr;//htonl(inet_network("192.168.0.10"));
+    conn.remote.sin_family = AF_INET;
+    conn.remote.sin_port = htons(atoi(argv[4]));
 
     printf("bind: %s [%d]\n", inet_ntoa(conn.local.sin_addr), ntohs(conn.local.sin_port));
 
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
     recver.join();
 
     conn.~udp_peer_connection();
-    stun.~stun_client();
+    //stun.~stun_client();
 
     return 0;
 }
