@@ -21,7 +21,7 @@ target_include_directories(Qbackend
         ${CMAKE_CURRENT_LIST_DIR}/storage
         ${CMAKE_CURRENT_LIST_DIR}/xml
         ${CMAKE_CURRENT_LIST_DIR}/model
-        ${CMAKE_CURRENT_LIST_DIR}/ssl
+        ${CMAKE_CURRENT_LIST_DIR}/qrcode
 )
 
 set(CMAKE_MODULE_PATH
@@ -31,7 +31,7 @@ set(CMAKE_MODULE_PATH
     ${CMAKE_CURRENT_LIST_DIR}/storage
     ${CMAKE_CURRENT_LIST_DIR}/xml
     ${CMAKE_CURRENT_LIST_DIR}/model
-    ${CMAKE_CURRENT_LIST_DIR}/ssl
+    ${CMAKE_CURRENT_LIST_DIR}/qrcode
 )
 
 include(audio_engine_compenent)
@@ -40,7 +40,7 @@ include(json_engine_compenent)
 include(storage_engine_compenent)
 include(xml_engine_compenent)
 include(model_compenent)
-include(ssl_compenent)
+include(qrcode_engine_compenent)
 
 FetchContent_Declare(fmt
   GIT_REPOSITORY https://github.com/fmtlib/fmt.git
@@ -60,11 +60,17 @@ FetchContent_Declare(httplib
 )
 FetchContent_MakeAvailable(httplib)
 
+FetchContent_Declare(zxing
+  GIT_REPOSITORY https://github.com/zxing-cpp/zxing-cpp.git
+  GIT_TAG v2.2.1
+)
+FetchContent_MakeAvailable(zxing)
 
 target_link_libraries(Qbackend PRIVATE
     fmt::fmt
     nlohmann_json
     httplib::httplib
+    zxing
 )
 
 configure_file(
