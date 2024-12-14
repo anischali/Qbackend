@@ -70,7 +70,7 @@ target_link_libraries(Qbackend PRIVATE
     fmt::fmt
     nlohmann_json
     httplib::httplib
-    zxing
+    ZXing::ZXing
 )
 
 configure_file(

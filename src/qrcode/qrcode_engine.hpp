@@ -1,52 +1,15 @@
+#ifndef __QRCODE_ENGINE_HPP__
+#define __QRCODE_ENGINE_HPP__
 #include "BarcodeFormat.h"
 #include "BitMatrix.h"
 #include "MultiFormatWriter.h"
 #include "MultiFormatReader.h"
 #include "BinaryBitmap.h"
+#include "ReadBarcode.h"
 
 
+ZXing::ImageView qrcode_write_string_barcode(std::string text, ZXing::BarcodeFormat format);
+std::string qrcode_read_string_barcode(ZXing::ImageView &image, ZXing::ReaderOptions opts);
 
 
-using namespace ZXing;
-
-Matrix<uint8_t> write_barcode(std::string text, ZXing::BarcodeFormat format)
-{
-	using namespace ZXing;
-
-	auto writer = MultiFormatWriter(format);
-	auto matrix = writer.encode(text, 0, 0);
-	auto bitmap = ToMatrix<uint8_t>(matrix);
-
-
-	return bitmap.copy();
-}
-
-
-
-Matrix<uint8_t> write_barcode(std::string text, ZXing::BarcodeFormat format)
-{
-	using namespace ZXing;
-
-	auto writer = MultiFormatWriter(format);
-	auto matrix = writer.encode(text, 0, 0);
-	auto bitmap = ToMatrix<uint8_t>(matrix);
-
-
-	return bitmap.copy();
-}
-
-
-
-std::string read_barcode(BinaryBitmap image, ReaderOptions opts)
-{
-	using namespace ZXing;
-
-	auto reader = MultiFormatReader(opts);
-	auto result = reader.read(image);
-
-	return result.text();
-}
-
-
-
-
+#endif
