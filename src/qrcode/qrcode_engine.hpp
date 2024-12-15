@@ -13,8 +13,8 @@ class qrcode_engine {
 private:
 
 public:
-    qrcode_engine();
-    ~qrcode_engine();
+    qrcode_engine() {};
+    ~qrcode_engine() {};
 
 
     ZXing::Matrix<uint8_t> write(std::string text, ZXing::BarcodeFormat format);
