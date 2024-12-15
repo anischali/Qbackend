@@ -18,6 +18,7 @@ public:
 
 
     ZXing::Matrix<uint8_t> write(std::string text, ZXing::BarcodeFormat format);
+    ZXing::Matrix<uint8_t> qrcode_engine::write(std::string text, ZXing::BarcodeFormat format, int height, int width);
     std::string read(ZXing::ImageView &image, ZXing::ReaderOptions opts);
 };
 };
