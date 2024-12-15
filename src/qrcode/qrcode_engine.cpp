@@ -9,10 +9,10 @@ ZXing::Matrix<uint8_t> qrcode_engine::write(std::string text, ZXing::BarcodeForm
 }
 
 
-ZXing::Matrix<uint8_t> qrcode_engine::write(std::string text, ZXing::BarcodeFormat format, int height, int width)
+ZXing::Matrix<uint8_t> qrcode_engine::write(std::string text, ZXing::BarcodeFormat format, int width, int height)
 {
 	auto writer = ZXing::MultiFormatWriter(format);
-	auto matrix = writer.encode(text, 512, 512);
+	auto matrix = writer.encode(text, width, height);
 	auto bitmap = ZXing::ToMatrix<uint8_t>(matrix);
 
 
