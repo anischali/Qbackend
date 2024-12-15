@@ -8,8 +8,21 @@
 #include "ReadBarcode.h"
 
 
-ZXing::ImageView qrcode_write_string_barcode(std::string text, ZXing::BarcodeFormat format);
-std::string qrcode_read_string_barcode(ZXing::ImageView &image, ZXing::ReaderOptions opts);
+namespace qbackend::engines {
+class qrcode_engine {
+
+private:
+
+public:
+    qrcode_engine();
+    ~qrcode_engine();
+
+
+    ZXing::ImageView write(std::string text, ZXing::BarcodeFormat format);
+    std::string read(ZXing::ImageView &image, ZXing::ReaderOptions opts);
+};
+};
+
 
 
 #endif

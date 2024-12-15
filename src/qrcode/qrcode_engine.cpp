@@ -1,6 +1,9 @@
 #include "qrcode_engine.hpp"
 
-ZXing::ImageView qrcode_write_string_barcode(std::string text, ZXing::BarcodeFormat format)
+
+using namespace qbackend::engines;
+
+ZXing::ImageView qrcode_engine::write(std::string text, ZXing::BarcodeFormat format)
 {
 	auto writer = ZXing::MultiFormatWriter(format);
 	auto matrix = writer.encode(text, 0, 0);
@@ -10,7 +13,7 @@ ZXing::ImageView qrcode_write_string_barcode(std::string text, ZXing::BarcodeFor
 	return ZXing::ImageView(bitmap.data(), bitmap.width(), bitmap.height(), ZXing::ImageFormat::RGB, 0, 0);
 }
 
-std::string qrcode_read_string_barcode(ZXing::ImageView &image, ZXing::ReaderOptions opts)
+std::string qrcode_engine::read(ZXing::ImageView &image, ZXing::ReaderOptions opts)
 {
 	ZXing::Result result = ZXing::ReadBarcode(image, opts);
 
