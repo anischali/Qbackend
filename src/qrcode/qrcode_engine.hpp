@@ -7,7 +7,6 @@
 #include "BinaryBitmap.h"
 #include "ReadBarcode.h"
 
-
 namespace qbackend::engines {
 class qrcode_engine {
 
@@ -18,7 +17,7 @@ public:
     ~qrcode_engine();
 
 
-    ZXing::ImageView write(std::string text, ZXing::BarcodeFormat format);
+    ZXing::Matrix<uint8_t> write(std::string text, ZXing::BarcodeFormat format);
     std::string read(ZXing::ImageView &image, ZXing::ReaderOptions opts);
 };
 };
