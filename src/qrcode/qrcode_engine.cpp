@@ -27,3 +27,13 @@ std::string qrcode_engine::read(ZXing::ImageView &image, ZXing::ReaderOptions op
 }
 
 
+
+
+std::string qrcode_engine::read(ZXing::ImageView &image) {
+	ZXing::ReaderOptions opts;
+
+	opts.setTextMode(ZXing::TextMode::HRI);
+	opts.setEanAddOnSymbol(ZXing::EanAddOnSymbol::Read);
+
+	return read(image, opts);
+}
