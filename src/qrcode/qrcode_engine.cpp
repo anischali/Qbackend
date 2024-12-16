@@ -3,11 +3,16 @@
 
 using namespace qbackend::engines;
 
-
 ZXing::Matrix<uint8_t> qrcode_engine::write(std::string text, ZXing::BarcodeFormat format)
 {
+	return write(text, format, 512, 512);
+}
+
+
+ZXing::Matrix<uint8_t> qrcode_engine::write(std::string text, ZXing::BarcodeFormat format, int width, int height)
+{
 	auto writer = ZXing::MultiFormatWriter(format);
-	auto matrix = writer.encode(text, 0, 0);
+	auto matrix = writer.encode(text, width, height);
 	auto bitmap = ZXing::ToMatrix<uint8_t>(matrix);
 
 
